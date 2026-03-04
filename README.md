@@ -14,8 +14,9 @@ students, and developers a useful tool for developing innovative algorithms with
 
 Update
 -------------------------------------------------------------------------------
-1. Modified the L1 signal generation vulnerability that produces IQ channel components.
+1. Fix some bug, modified the L1 signal generation vulnerability that produces IQ channel components.
 2. An additional step for pseudorange calculation of each satellite has been added.
+3. Including delays caused by the ionosphere.
 
 Future
 -------------------------------------------------------------------------------
