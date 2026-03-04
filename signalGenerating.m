@@ -147,7 +147,7 @@ for loopCnt =  1:iterCnt
         if  settings.fileType == 1
             localCarr = cos(carrFreqRad * TxTimeSample - localOsFreq * RxTimeSample);
         elseif settings.fileType == 2
-            localCarr = exp(-1i*(carrFreqRad * TxTimeSample - localOsFreq * RxTimeSample));
+            localCarr = exp(1i*(carrFreqRad * TxTimeSample - localOsFreq * RxTimeSample));
         end
         
         % Local code samples
@@ -204,23 +204,34 @@ for loopCnt =  1:iterCnt
     end
     
     % ADC quantization ----------------------------------------------------
-    if strcmp(settings.dataType,'int8')
-        localSigSum = localSigSum/max(real(localSigSum)) * 2^7;
-        quantizedSig = int8(localSigSum);
-        fwrite(fid,quantizedSig,settings.dataType);
-    elseif strcmp(settings.dataType,'int16')
-        localSigSum = localSigSum/max(real(localSigSum)) * 2^12;
-        quantizedSig = int16(localSigSum); 
-        fwrite(fid,quantizedSig,settings.dataType);
-    end
-    
+    if settings.fileType == 1
+        if strcmp(settings.dataType,'int8')
+            localSigSum = localSigSum/max(real(localSigSum)) * 2^7;
+            quantizedSig = int8(localSigSum);
+            fwrite(fid,quantizedSig,settings.dataType);
+        elseif strcmp(settings.dataType,'int16')
+            localSigSum = localSigSum/max(real(localSigSum)) * 2^12;
+            quantizedSig = int16(localSigSum); 
+            fwrite(fid,quantizedSig,settings.dataType);
+        end
+    end 
     if settings.fileType == 2 
-        quantizedSig1 = reshape([real(quantizedSig);imag(quantizedSig)],[],1);
-        fwrite(fid,quantizedSig1,settings.dataType);
+        if strcmp(settings.dataType,'int8')
+            localSigSum = localSigSum/max(sqrt(real(localSigSum).^2+imag(localSigSum).^2)) * 2^7;
+            quantizedSig = int8(localSigSum);
+            quantizedSig1 = reshape([real(quantizedSig);imag(quantizedSig)],[],1);
+            fwrite(fid,quantizedSig1,settings.dataType);
+        elseif strcmp(settings.dataType,'int16')
+            localSigSum = localSigSum/max(sqrt(real(localSigSum).^2+imag(localSigSum).^2)) * 2^12;
+            quantizedSig = int16(localSigSum); 
+            quantizedSig1 = reshape([real(quantizedSig);imag(quantizedSig)],[],1);
+            fwrite(fid,quantizedSig,settings.dataType);
+        end
     end
     
 end
 %% clear environment
 fclose(fid);
 close(hwb) 
+
 
