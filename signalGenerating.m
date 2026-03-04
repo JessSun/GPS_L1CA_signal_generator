@@ -101,6 +101,8 @@ bitPeriod = 0.001 * 20;
 coef = getFliterCoef(settings);
 % Open the IF file to save senerated samples 
 [fid, ~] = fopen(settings.IfFile, 'w');
+% The pseudorange of each satellite at each point in time
+pseudoRanges = zeros(length(satList), iterCnt);  
 
 % Start waitbar
 hwb = waitbar(0,'IF signal generating ...');
@@ -134,9 +136,12 @@ for loopCnt =  1:iterCnt
     for svIndex = 1:length(satList)
         % Compute the transmitting time coresponding to the Rx time -------
         PRN = satList(svIndex);
-        [TxTime,satClkErr] = GetTravelTime(RxTime,RxPosEcef,eph(PRN),settings);
+        [TxTime,satClkErr,pseudoRange] = GetTravelTime(RxTime,RxPosEcef,eph(PRN),settings);
         % include tgd, clock error and relativistic effect 
         TxTime = TxTime + satClkErr;
+
+        % save the pseudorange at the first reception time for each satellite
+        pseudoRanges(svIndex, loopCnt) = pseudoRange(1);
         
         % generate local code, carrier and Nav data -----------------------
         sapcing = (TxTime(2) - TxTime(1))/blockSize;
@@ -233,5 +238,6 @@ end
 %% clear environment
 fclose(fid);
 close(hwb) 
+
 
 
