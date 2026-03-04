@@ -1,4 +1,4 @@
-function [TxTime,satClkErr] = GetTravelTime(RxTime,RxPos,eph,settings)
+function [TxTime,satClkErr, pseudoRange] = GetTravelTime(RxTime,RxPos,eph,settings)
 % Get signal transmitting time and travel time.
 %
 %[Txtime,travelTime] = GetTravelTime(RxTime,RxPosEcef,eph,settings)
@@ -27,6 +27,7 @@ TxTime = zeros(1,length(RxTime));
 travelTime = zeros(1,length(RxTime));
 % Satellite clock error including relativistic effect and tgd
 satClkErr = zeros(1,length(RxTime));
+pseudoRange = zeros(1,length(RxTime));
 
 for index = 1:length(RxTime)
     % --- Initialize the transmitting time --------------------------------
@@ -59,9 +60,12 @@ for index = 1:length(RxTime)
             TxTime(index) = TxtimeCorrect;
             travelTime(index) = traveltimeTemp;
             satClkErr(index) = GpsClockCorrection(TxtimeCorrect,eph) + relaError;
+            % Calculate the pseudorange for each satellite
+            pseudoRange(index) = travelTime(index) * settings.c + satClkErr(index) * settings.c;
             break
         end
         % For next interation
         TxTimeTemp = TxtimeCorrect;
     end   % iterCnt = 1:10 
 end   % index = 1:length(RxTime)
+
