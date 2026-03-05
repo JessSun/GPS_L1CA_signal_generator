@@ -136,7 +136,7 @@ for loopCnt =  1:iterCnt
     for svIndex = 1:length(satList)
         % Compute the transmitting time coresponding to the Rx time -------
         PRN = satList(svIndex);
-        [TxTime,satClkErr,pseudoRange] = GetTravelTime(RxTime,RxPosEcef,eph(PRN),settings);
+        [TxTime,satClkErr,ionoErr,pseudoRange] = GetTravelTime(RxTime,RxPosEcef,eph(PRN),ionoutc,settings);
         % include tgd, clock error and relativistic effect 
         TxTime = TxTime + satClkErr;
 
