@@ -1,6 +1,6 @@
 # An open source software-defined IF signal simulator for GPS receivers
 
-Originally developed by Li Yafeng, with gratitude to Professor Li. The current version has been modified by Sun Jie.
+Originally developed by Yafeng Li, with gratitude to Professor Li. The current version has been modified by Jie Sun.
 
 Features
 -------------------------------------------------------------------------------
